@@ -4,10 +4,14 @@ using UnityEngine;
 
 public class MainManager : MonoBehaviour {
 
+    BoardManager boardManager;
+
     [SerializeField] GameObject mainCamera;
 
     [SerializeField] GameObject gameObjectPanelTitle;
     [SerializeField] GameObject gameObjectPanelSelectLevel;
+
+    [SerializeField] GameObject gameObjectTitles;
 
 	// Use this for initialization
 	void Start () {
@@ -16,6 +20,8 @@ public class MainManager : MonoBehaviour {
             int size = Screen.height * 540 / Screen.width;
             mainCamera.GetComponent<Camera>().orthographicSize = size;
         }
+
+        boardManager = GameObject.Find("BoardManager").GetComponent<BoardManager>();
     }
 	
 	// Update is called once per frame
@@ -26,6 +32,11 @@ public class MainManager : MonoBehaviour {
     public void SetActivePanelTitle()
     {
         gameObjectPanelTitle.SetActive(true);
+    }
+
+    public void MoveToMain()
+    {
+        boardManager.Initialize();
     }
 
     public void PushLoginButton()
@@ -51,7 +62,8 @@ public class MainManager : MonoBehaviour {
 
     public void PushEasyButton()
     {
-
+        gameObjectPanelSelectLevel.SetActive(false);
+        gameObjectTitles.GetComponent<Titles>().SetTrigger("MoveOut");
     }
 
     public void PushNormalButton()
