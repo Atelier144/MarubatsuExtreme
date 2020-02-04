@@ -10,8 +10,11 @@ public class MainManager : MonoBehaviour {
     GameObject gameObjectCanvas;
 
     GameObject gameObjectPanelMain;
+
     GameObject gameObjectPanelIntroduction;
     GameObject gameObjectPanelTitle;
+    GameObject gameObjectPanelSelectMode;
+    GameObject gameObjectPanelLoginForm;
 
     GameObject gameObjectButtonStart;
     GameObject gameObjectButtonLogin;
@@ -27,6 +30,8 @@ public class MainManager : MonoBehaviour {
         gameObjectPanelMain = gameObjectCanvas.transform.Find("PanelMain").gameObject;
         gameObjectPanelIntroduction = gameObjectPanelMain.transform.Find("PanelIntroduction").gameObject;
         gameObjectPanelTitle = gameObjectPanelMain.transform.Find("PanelTitle").gameObject;
+        gameObjectPanelSelectMode = gameObjectPanelMain.transform.Find("PanelSelectMode").gameObject;
+        gameObjectPanelLoginForm = gameObjectPanelMain.transform.Find("PanelLoginForm").gameObject;
 
         imageIntroduction = gameObjectPanelIntroduction.transform.Find("ImageIntroduction").gameObject.GetComponent<Image>();
         imageTitle = gameObjectPanelTitle.transform.Find("ImageTitle").gameObject.GetComponent<Image>();
@@ -51,6 +56,32 @@ public class MainManager : MonoBehaviour {
     public void OnClickButtonLogin()
     {
         StartCoroutine(CoroutineOnClickButtonLogin());
+    }
+
+    public void OnClickButtonSettings()
+    {
+
+    }
+
+    public void OnClickButtonBackToTitle()
+    {
+        gameObjectPanelMain.transform.DOLocalMove(new Vector3(1620.0f, 0.0f, 0.0f), 0.4f);
+    }
+
+    public void OnClickButtonOffline()
+    {
+        StartCoroutine(CoroutineOnClickButtonOffline());
+    }
+
+    public void OnClickButtonOnline()
+    {
+        StartCoroutine(CoroutineOnClickButtonOnline());
+    }
+
+    public void OnClickButtonGameStart(int level)
+    {
+        Debug.Log(level);
+        StartCoroutine(CoroutineOnClickButtonGameStart());
     }
 
     public void OnClickButtonLoginSubmit()
@@ -89,14 +120,29 @@ public class MainManager : MonoBehaviour {
 
     IEnumerator CoroutineOnClickButtonStart()
     {
+        gameObjectPanelSelectMode.SetActive(true);
+        gameObjectPanelLoginForm.SetActive(false);
         yield return new WaitForSeconds(1.0f);
         gameObjectPanelMain.transform.DOLocalMove(new Vector3(810.0f, 0.0f, 0.0f), 0.5f);
     }
 
     IEnumerator CoroutineOnClickButtonLogin()
     {
+        gameObjectPanelSelectMode.SetActive(false);
+        gameObjectPanelLoginForm.SetActive(true);
         yield return new WaitForSeconds(1.0f);
         gameObjectPanelMain.transform.DOLocalMove(new Vector3(810.0f, 0.0f, 0.0f), 0.5f);
+    }
+
+    IEnumerator CoroutineOnClickButtonOffline()
+    {
+        yield return new WaitForSeconds(1.0f);
+        gameObjectPanelMain.transform.DOLocalMove(new Vector3(0.0f, 0.0f, 0.0f), 0.5f);
+    }
+
+    IEnumerator CoroutineOnClickButtonOnline()
+    {
+        yield return new WaitForSeconds(1.0f);
     }
 
     IEnumerator CoroutineOnClickButtonLoginSubmit()
@@ -110,5 +156,11 @@ public class MainManager : MonoBehaviour {
     {
         yield return new WaitForSeconds(1.0f);
         Application.OpenURL("https://gameatelier144.com/signup");
+    }
+
+    IEnumerator CoroutineOnClickButtonGameStart()
+    {
+        yield return new WaitForSeconds(1.0f);
+        gameObjectPanelMain.transform.DOLocalMove(new Vector3(-810.0f, 0.0f, 0.0f), 0.5f);
     }
 }

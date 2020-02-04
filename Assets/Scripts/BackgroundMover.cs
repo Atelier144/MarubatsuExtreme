@@ -13,6 +13,11 @@ public class BackgroundMover : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.position += new Vector3(0.0f, 0.1f, 0.0f);
+        
+    }
+
+    private void FixedUpdate()
+    {
+        transform.position += new Vector3(0.0f, 0.15f, 0.0f);
     }
 }
