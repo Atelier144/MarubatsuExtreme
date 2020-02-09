@@ -23,8 +23,12 @@ public class MainManager : MonoBehaviour {
     Image imageIntroduction;
     Image imageTitle;
 
+    BoardManager boardManager;
+
     // Use this for initialization
     void Start () {
+        boardManager = GameObject.Find("BoardManager").GetComponent<BoardManager>();
+
         gameObjectCanvas = GameObject.Find("Canvas");
 
         gameObjectPanelMain = gameObjectCanvas.transform.Find("PanelMain").gameObject;
@@ -80,7 +84,7 @@ public class MainManager : MonoBehaviour {
 
     public void OnClickButtonGameStart(int level)
     {
-        Debug.Log(level);
+        boardManager.PrepareForOffline(level);
         StartCoroutine(CoroutineOnClickButtonGameStart());
     }
 
@@ -138,6 +142,7 @@ public class MainManager : MonoBehaviour {
     {
         yield return new WaitForSeconds(1.0f);
         gameObjectPanelMain.transform.DOLocalMove(new Vector3(0.0f, 0.0f, 0.0f), 0.5f);
+
     }
 
     IEnumerator CoroutineOnClickButtonOnline()
@@ -161,6 +166,6 @@ public class MainManager : MonoBehaviour {
     IEnumerator CoroutineOnClickButtonGameStart()
     {
         yield return new WaitForSeconds(1.0f);
-        gameObjectPanelMain.transform.DOLocalMove(new Vector3(-810.0f, 0.0f, 0.0f), 0.5f);
+        gameObjectPanelMain.transform.DOLocalMove(new Vector3(-810.0f, 0.0f, 0.0f), 0.5f).OnComplete(()=> { boardManager.Initialize(); });
     }
 }
