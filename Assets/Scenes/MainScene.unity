@@ -8826,16 +8826,16 @@ MonoBehaviour:
   - {fileID: -6180646531693327489, guid: e72b529bb2a944ca29bb4b4e05db6fd0, type: 3}
   - {fileID: 8855513090511461060, guid: e72b529bb2a944ca29bb4b4e05db6fd0, type: 3}
   spritesNumbersOpponentTime:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: -6320737970689200424, guid: 32b52a56a70e64f1c8db5065aedcaf6c, type: 3}
+  - {fileID: -401486251752220150, guid: 32b52a56a70e64f1c8db5065aedcaf6c, type: 3}
+  - {fileID: -9099656522856926510, guid: 32b52a56a70e64f1c8db5065aedcaf6c, type: 3}
+  - {fileID: 2784478181410311478, guid: 32b52a56a70e64f1c8db5065aedcaf6c, type: 3}
+  - {fileID: -5988562231275879157, guid: 32b52a56a70e64f1c8db5065aedcaf6c, type: 3}
+  - {fileID: -7969022732264308065, guid: 32b52a56a70e64f1c8db5065aedcaf6c, type: 3}
+  - {fileID: -4862730110761546203, guid: 32b52a56a70e64f1c8db5065aedcaf6c, type: 3}
+  - {fileID: 4068218410231084125, guid: 32b52a56a70e64f1c8db5065aedcaf6c, type: 3}
+  - {fileID: -9182332986379823193, guid: 32b52a56a70e64f1c8db5065aedcaf6c, type: 3}
+  - {fileID: -8383262578352234168, guid: 32b52a56a70e64f1c8db5065aedcaf6c, type: 3}
   imageNumberPlayerTimeBig: {fileID: 225018843}
   imageNumberPlayerTimeSmall1: {fileID: 503076266}
   imageNumberPlayerTimeSmall2: {fileID: 2093943968}
@@ -8853,6 +8853,11 @@ MonoBehaviour:
   - {fileID: 1791911533}
   - {fileID: 441657288}
   - {fileID: 2124853487}
+  prefabsBoardAIs:
+  - {fileID: 2975676138635128931, guid: c75d0cd527f6b47f5809d5d09cce03ca, type: 3}
+  - {fileID: 280491011865009198, guid: 3b8f1de5cb6e548598008814103387e6, type: 3}
+  - {fileID: 1108733333077142165, guid: 804c517847de249b495693a18ef00877, type: 3}
+  - {fileID: 6810639661115727848, guid: 1a5c82f1ddaad44b4b34b00a5b5617cc, type: 3}
 --- !u!1 &1043774948
 GameObject:
   m_ObjectHideFlags: 0
@@ -11410,6 +11415,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0fdc05e9f8e0042ec8fbd6397ecafc0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameObjectPanelMain: {fileID: 412572029}
+  gameObjectPanelIntroduction: {fileID: 1043774948}
+  gameObjectPanelTitle: {fileID: 1249504945}
+  gameObjectPanelSelectMode: {fileID: 887717750}
+  gameObjectPanelLoginForm: {fileID: 887717750}
+  gameObjectButtonStart: {fileID: 1181015}
+  gameObjectButtonLogin: {fileID: 1345282218}
+  gameObjectButtonSettings: {fileID: 85185552}
+  imageIntroduction: {fileID: 63008471}
+  imageTitle: {fileID: 1772411386}
 --- !u!4 &1589695483
 Transform:
   m_ObjectHideFlags: 0

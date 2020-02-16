@@ -15,6 +15,8 @@ public class BoardManager : MonoBehaviour
     const int STATE_OPPONENT_TURN = 2;
     const int STATE_STANDBY = 3;
 
+    MainManager mainManager;
+
     [SerializeField] Sprite[] spritesNumbersPlayerTime = new Sprite[10];
     [SerializeField] Sprite[] spritesNumbersOpponentTime = new Sprite[10];
 
@@ -27,6 +29,11 @@ public class BoardManager : MonoBehaviour
     [SerializeField] Image imageNumberOpponentTimeSmall2;
 
     [SerializeField] GameObject[] gameObjectImageBoard = new GameObject[10];
+
+    [SerializeField] GameObject[] prefabsBoardAIs = new GameObject[4];
+
+    BoardAI currentBoardAI;
+
     Animator[] animatorsBoard = new Animator[10];
 
     int playMode = MODE_OFFLINE;
@@ -44,6 +51,8 @@ public class BoardManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        mainManager = GameObject.Find("MainManager").GetComponent<MainManager>();
+
         for (int i = 0; i < 10; i++) animatorsBoard[i] = gameObjectImageBoard[i].GetComponent<Animator>();
     }
 
@@ -54,9 +63,9 @@ public class BoardManager : MonoBehaviour
         imageNumberPlayerTimeSmall1.sprite = spritesNumbersPlayerTime[timePlayer / 5 % 10];
         imageNumberPlayerTimeSmall2.sprite = spritesNumbersPlayerTime[timePlayer % 5 * 2];
 
-        imageNumberOpponentTimeBig.sprite = spritesNumbersPlayerTime[timeOpponent / 50 % 10];
-        imageNumberOpponentTimeSmall1.sprite = spritesNumbersPlayerTime[timeOpponent / 5 % 10];
-        imageNumberOpponentTimeSmall2.sprite = spritesNumbersPlayerTime[timeOpponent % 5 * 2];
+        imageNumberOpponentTimeBig.sprite = spritesNumbersOpponentTime[timeOpponent / 50 % 10];
+        imageNumberOpponentTimeSmall1.sprite = spritesNumbersOpponentTime[timeOpponent / 5 % 10];
+        imageNumberOpponentTimeSmall2.sprite = spritesNumbersOpponentTime[timeOpponent % 5 * 2];
     }
 
     private void FixedUpdate()
@@ -93,9 +102,9 @@ public class BoardManager : MonoBehaviour
         }
     }
 
-    public void PrepareForOffline(int BoardAILevel)
+    public void PrepareForOffline(int boardAILevel)
     {
-
+        currentBoardAI = prefabsBoardAIs[boardAILevel].GetComponent<BoardAI>();
     }
 
     public void PrepareForOnline()
@@ -127,6 +136,7 @@ public class BoardManager : MonoBehaviour
                         string triggerName = i == s ? "FadingMaru" : "Invisible";
                         animatorsBoard[i].SetTrigger(triggerName);
                     }
+                    currentBoardAI.BeginThinking();
                     break;
                 case 1: //プレイヤーの勝ち
                     StartCoroutine(PlayerWin());
@@ -216,6 +226,16 @@ public class BoardManager : MonoBehaviour
             if (mainBoard[i] == 0) return 0;
         }
         return 3;
+    }
+
+    void AddPlayerPoint()
+    {
+
+    }
+
+    void AddOpponentPoint()
+    {
+
     }
 
     IEnumerator PlayerWin()

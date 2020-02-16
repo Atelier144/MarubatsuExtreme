@@ -7,42 +7,31 @@ using DG.Tweening;
 
 public class MainManager : MonoBehaviour {
 
-    GameObject gameObjectCanvas;
 
-    GameObject gameObjectPanelMain;
+    [SerializeField] GameObject gameObjectPanelMain;
 
-    GameObject gameObjectPanelIntroduction;
-    GameObject gameObjectPanelTitle;
-    GameObject gameObjectPanelSelectMode;
-    GameObject gameObjectPanelLoginForm;
+    [SerializeField] GameObject gameObjectPanelIntroduction;
+    [SerializeField] GameObject gameObjectPanelTitle;
+    [SerializeField] GameObject gameObjectPanelSkipIntroduction;
 
-    GameObject gameObjectButtonStart;
-    GameObject gameObjectButtonLogin;
-    GameObject gameObjectButtonSettings;
+    [SerializeField] GameObject gameObjectPanelSelectMode;
+    [SerializeField] GameObject gameObjectPanelLoginForm;
 
-    Image imageIntroduction;
-    Image imageTitle;
+    [SerializeField] GameObject gameObjectButtonStart;
+    [SerializeField] GameObject gameObjectButtonLogin;
+    [SerializeField] GameObject gameObjectButtonSettings;
+
+    [SerializeField] Image imageIntroduction;
+    [SerializeField] Image imageTitle;
 
     BoardManager boardManager;
+
+    Sequence sequenceImageIntroduction;
+    Sequence sequenceImageTitle;
 
     // Use this for initialization
     void Start () {
         boardManager = GameObject.Find("BoardManager").GetComponent<BoardManager>();
-
-        gameObjectCanvas = GameObject.Find("Canvas");
-
-        gameObjectPanelMain = gameObjectCanvas.transform.Find("PanelMain").gameObject;
-        gameObjectPanelIntroduction = gameObjectPanelMain.transform.Find("PanelIntroduction").gameObject;
-        gameObjectPanelTitle = gameObjectPanelMain.transform.Find("PanelTitle").gameObject;
-        gameObjectPanelSelectMode = gameObjectPanelMain.transform.Find("PanelSelectMode").gameObject;
-        gameObjectPanelLoginForm = gameObjectPanelMain.transform.Find("PanelLoginForm").gameObject;
-
-        imageIntroduction = gameObjectPanelIntroduction.transform.Find("ImageIntroduction").gameObject.GetComponent<Image>();
-        imageTitle = gameObjectPanelTitle.transform.Find("ImageTitle").gameObject.GetComponent<Image>();
-
-        gameObjectButtonStart = gameObjectPanelTitle.transform.Find("ButtonStart").gameObject;
-        gameObjectButtonLogin = gameObjectPanelTitle.transform.Find("ButtonLogin").gameObject;
-        gameObjectButtonSettings = gameObjectPanelTitle.transform.Find("ButtonSettings").gameObject;
 
         StartCoroutine(CoroutineIntroduction());
     }
@@ -50,6 +39,11 @@ public class MainManager : MonoBehaviour {
     // Update is called once per frame
     void Update () {
     
+    }
+
+    public void OnPointerDownButtonSkipIntroduction()
+    {
+        OnFinishIntroduction();
     }
 
     public void OnClickButtonStart()
@@ -98,27 +92,46 @@ public class MainManager : MonoBehaviour {
         StartCoroutine(CoroutineOnClickButtonAtelier144Signup());
     }
 
-    IEnumerator CoroutineIntroduction()
+    void OnFinishIntroduction()
     {
-        yield return new WaitForSeconds(1.0f);
 
-        // イントロダクションを徐々に表示させて、徐々に消滅させるDOTween Sequense
-        Sequence sequenceImageIntroduction = DOTween.Sequence();
-        sequenceImageIntroduction.Append(imageIntroduction.DOColor(new Color(1.0f, 1.0f, 1.0f, 1.0f), 3.0f));
-        sequenceImageIntroduction.Append(imageIntroduction.DOColor(new Color(1.0f, 1.0f, 1.0f, 0.0f), 3.0f));
-
-        yield return new WaitForSeconds(6.0f);
         gameObjectPanelIntroduction.SetActive(false);
         gameObjectPanelTitle.SetActive(true);
+        gameObjectPanelSkipIntroduction.SetActive(false);
 
-        imageTitle.DOColor(new Color(1.0f, 1.0f, 1.0f, 1.0f), 4.0f);
+        sequenceImageIntroduction.Kill();
+        sequenceImageTitle.Kill();
 
-        yield return new WaitForSeconds(4.0f);
+        imageIntroduction.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
         imageTitle.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
 
         gameObjectButtonStart.SetActive(true);
         gameObjectButtonLogin.SetActive(true);
         gameObjectButtonSettings.SetActive(true);
+    }
+
+    IEnumerator CoroutineIntroduction()
+    {
+        yield return new WaitForSeconds(1.0f);
+
+        // イントロダクションを徐々に表示させて、徐々に消滅させるDOTween Sequense
+        sequenceImageIntroduction = DOTween.Sequence();
+        sequenceImageIntroduction.Append(imageIntroduction.DOColor(new Color(1.0f, 1.0f, 1.0f, 1.0f), 3.0f));
+        sequenceImageIntroduction.Append(imageIntroduction.DOColor(new Color(1.0f, 1.0f, 1.0f, 0.0f), 3.0f));
+
+        yield return new WaitForSeconds(6.0f);
+
+        gameObjectPanelIntroduction.SetActive(false);
+        gameObjectPanelTitle.SetActive(true);
+
+        // タイトルを徐々に表示させるDOTween Sequense
+        sequenceImageTitle = DOTween.Sequence();
+        sequenceImageTitle.Append(imageTitle.DOColor(new Color(1.0f, 1.0f, 1.0f, 1.0f), 4.0f));
+
+
+        yield return new WaitForSeconds(4.0f);
+
+        OnFinishIntroduction();
 
     }
 
