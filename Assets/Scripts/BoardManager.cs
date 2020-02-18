@@ -120,7 +120,7 @@ public class BoardManager : MonoBehaviour
 
     public void Conclude()
     {
-
+        boardState = STATE_SLEEP;
     }
 
     public void OnPointerDownButtonControl(int s)
@@ -131,6 +131,7 @@ public class BoardManager : MonoBehaviour
             {
                 case 0: //試合続行
                     boardState = STATE_OPPONENT_TURN;
+                    animatorsBoard[0].SetTrigger("OpponentTurn");
                     for(int i = 1; i < 10; i++)
                     {
                         string triggerName = i == s ? "FadingMaru" : "Invisible";
@@ -158,6 +159,7 @@ public class BoardManager : MonoBehaviour
             {
                 case 0: //試合続行
                     boardState = STATE_PLAYER_TURN;
+                    animatorsBoard[0].SetTrigger("PlayerTurn");
                     for (int i = 1; i < 10; i++)
                     {
                         string triggerName = i == s ? "FadingBatsu" : "Invisible";
@@ -266,7 +268,8 @@ public class BoardManager : MonoBehaviour
             }
         }
         boardState = STATE_STANDBY;
-        yield return new WaitForSeconds(1.0f);
+        animatorsBoard[0].SetTrigger("PlayerWin");
+        yield return new WaitForSeconds(3.0f);
         StartCoroutine(RoundCall());
     }
 
@@ -298,6 +301,8 @@ public class BoardManager : MonoBehaviour
             }
         }
         boardState = STATE_STANDBY;
+        animatorsBoard[0].SetTrigger("OpponentWin");
+
         yield return new WaitForSeconds(1.0f);
         StartCoroutine(RoundCall());
     }
@@ -341,6 +346,7 @@ public class BoardManager : MonoBehaviour
         boardState = STATE_STANDBY;
         if (drawCount < 24) drawCount++;
 
+        animatorsBoard[0].SetTrigger("Draw");
         for (int i = 1; i < 10; i++)
         {
             string[] triggerNames = { "Invisible", "Maru", "Batsu" };
@@ -352,6 +358,7 @@ public class BoardManager : MonoBehaviour
 
     IEnumerator RoundCall()
     {
+        animatorsBoard[0].SetTrigger("Idle");
         for (int i = 1; i < 10; i++)
         {
             animatorsBoard[i].SetTrigger("Invisible");
@@ -363,5 +370,6 @@ public class BoardManager : MonoBehaviour
         yield return new WaitForSeconds(2.0f);
         Debug.Log("FIGHT");
         boardState = STATE_PLAYER_TURN;
+        animatorsBoard[0].SetTrigger("PlayerTurn");
     }
 }
