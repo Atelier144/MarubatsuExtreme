@@ -15,6 +15,8 @@ public class BoardManager : MonoBehaviour
     const int STATE_OPPONENT_TURN = 2;
     const int STATE_STANDBY = 3;
 
+    const float ROUND_RESULT_TIME = 5.0f;
+
     MainManager mainManager;
 
     [SerializeField] Sprite[] spritesNumbersPlayerTime = new Sprite[10];
@@ -47,6 +49,8 @@ public class BoardManager : MonoBehaviour
     int timeOpponent = 350;
 
     int drawCount = 0;
+
+    int assignedPosition = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -109,7 +113,7 @@ public class BoardManager : MonoBehaviour
 
     public void PrepareForOnline()
     {
-
+        
     }
 
     public void Initialize()
@@ -269,7 +273,7 @@ public class BoardManager : MonoBehaviour
         }
         boardState = STATE_STANDBY;
         animatorsBoard[0].SetTrigger("PlayerWin");
-        yield return new WaitForSeconds(3.0f);
+        yield return new WaitForSeconds(ROUND_RESULT_TIME);
         StartCoroutine(RoundCall());
     }
 
@@ -303,42 +307,46 @@ public class BoardManager : MonoBehaviour
         boardState = STATE_STANDBY;
         animatorsBoard[0].SetTrigger("OpponentWin");
 
-        yield return new WaitForSeconds(1.0f);
+        yield return new WaitForSeconds(ROUND_RESULT_TIME);
         StartCoroutine(RoundCall());
     }
 
     IEnumerator PlayerTimeUp()
     {
         boardState = STATE_STANDBY;
-        yield return new WaitForSeconds(1.0f);
+        yield return new WaitForSeconds(ROUND_RESULT_TIME);
         StartCoroutine(RoundCall());
     }
 
     IEnumerator OpponentTimeUp()
     {
         boardState = STATE_STANDBY;
-        yield return new WaitForSeconds(1.0f);
+        yield return new WaitForSeconds(ROUND_RESULT_TIME);
         StartCoroutine(RoundCall());
     }
 
     IEnumerator PlayerPilingViolatation()
     {
-        yield return new WaitForSeconds(1.0f);
+        boardState = STATE_STANDBY;
+        yield return new WaitForSeconds(ROUND_RESULT_TIME);
     }
 
     IEnumerator OpponentPilingViolatation()
     {
-        yield return new WaitForSeconds(1.0f);
+        boardState = STATE_STANDBY;
+        yield return new WaitForSeconds(ROUND_RESULT_TIME);
     }
 
     IEnumerator PlayerAssignedViolatation()
     {
-        yield return new WaitForSeconds(1.0f);
+        boardState = STATE_STANDBY;
+        yield return new WaitForSeconds(ROUND_RESULT_TIME);
     }
 
     IEnumerator OpponentAssignedViolatation()
     {
-        yield return new WaitForSeconds(1.0f);
+        boardState = STATE_STANDBY;
+        yield return new WaitForSeconds(ROUND_RESULT_TIME);
     }
 
     IEnumerator DrawGame()
