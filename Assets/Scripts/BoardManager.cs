@@ -22,6 +22,9 @@ public class BoardManager : MonoBehaviour
     [SerializeField] Sprite[] spritesNumbersPlayerTime = new Sprite[10];
     [SerializeField] Sprite[] spritesNumbersOpponentTime = new Sprite[10];
 
+    [SerializeField] Image[] imagesPlayerScore = new Image[5];
+    [SerializeField] Image[] imagesOpopnentScore = new Image[5];
+
     [SerializeField] Image imageNumberPlayerTimeBig;
     [SerializeField] Image imageNumberPlayerTimeSmall1;
     [SerializeField] Image imageNumberPlayerTimeSmall2;
