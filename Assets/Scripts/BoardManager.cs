@@ -22,8 +22,8 @@ public class BoardManager : MonoBehaviour
     [SerializeField] Sprite[] spritesNumbersPlayerTime = new Sprite[10];
     [SerializeField] Sprite[] spritesNumbersOpponentTime = new Sprite[10];
 
-    [SerializeField] Image[] imagesPlayerScore = new Image[5];
-    [SerializeField] Image[] imagesOpopnentScore = new Image[5];
+    [SerializeField] GameObject[] gameObjectsImagesPlayerScore = new GameObject[5];
+    [SerializeField] GameObject[] gameObjectsImagesOpopnentScore = new GameObject[5];
 
     [SerializeField] Image imageNumberPlayerTimeBig;
     [SerializeField] Image imageNumberPlayerTimeSmall1;
@@ -40,6 +40,8 @@ public class BoardManager : MonoBehaviour
     BoardAI currentBoardAI;
 
     Animator[] animatorsBoard = new Animator[10];
+    Animator[] animatorsPlayerScore = new Animator[5];
+    Animator[] animatorsOpponentScore = new Animator[5];
 
     int playMode = MODE_OFFLINE;
     int boardState = STATE_SLEEP;
@@ -67,6 +69,8 @@ public class BoardManager : MonoBehaviour
         mainManager = GameObject.Find("MainManager").GetComponent<MainManager>();
 
         for (int i = 0; i < 10; i++) animatorsBoard[i] = gameObjectImageBoard[i].GetComponent<Animator>();
+        for (int i = 0; i < 5; i++) animatorsPlayerScore[i] = gameObjectsImagesPlayerScore[i].GetComponent<Animator>();
+        for (int i = 0; i < 5; i++) animatorsOpponentScore[i] = gameObjectsImagesOpopnentScore[i].GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -196,7 +200,7 @@ public class BoardManager : MonoBehaviour
                     StartCoroutine(DrawGame());
                     break;
                 case 4: //プレイヤーの負け（コマを重ねる）
-                    StartCoroutine(PlayerPilingViolatation());
+                    StartCoroutine(PlayerPilingViolatation(s));
                     break;
                 case 5: //プレイヤーの負け（指定違反）
                     StartCoroutine(PlayerAssignedViolatation());
@@ -216,7 +220,7 @@ public class BoardManager : MonoBehaviour
         }
         else
         {
-            return 2;
+            return 4;
         }
     }
 
@@ -229,7 +233,7 @@ public class BoardManager : MonoBehaviour
         }
         else
         {
-            return 1;
+            return 4;
         }
     }
 
@@ -257,12 +261,16 @@ public class BoardManager : MonoBehaviour
 
     void AddPlayerPoint()
     {
-
+        animatorsPlayerScore[playerScore].SetTrigger("PlayerPoint");
+        playerScore++;
+        continuousDrawCount = 0;
     }
 
     void AddOpponentPoint()
     {
-
+        animatorsOpponentScore[opponentScore].SetTrigger("OpponentPoint");
+        opponentScore++;
+        continuousDrawCount = 0;
     }
 
     IEnumerator PlayerWin()
@@ -294,8 +302,20 @@ public class BoardManager : MonoBehaviour
         }
         boardState = STATE_STANDBY;
         animatorsBoard[0].SetTrigger("PlayerWin");
-        yield return new WaitForSeconds(ROUND_RESULT_TIME);
-        StartCoroutine(RoundCall());
+
+
+        AddPlayerPoint();
+
+        if(playerScore >= 5)
+        {
+            boardState = STATE_SLEEP;
+        }
+        else
+        {
+            yield return new WaitForSeconds(ROUND_RESULT_TIME);
+            StartCoroutine(RoundCall());
+        }
+        
     }
 
     IEnumerator OpponentWin()
@@ -328,34 +348,98 @@ public class BoardManager : MonoBehaviour
         boardState = STATE_STANDBY;
         animatorsBoard[0].SetTrigger("OpponentWin");
 
-        yield return new WaitForSeconds(ROUND_RESULT_TIME);
-        StartCoroutine(RoundCall());
+        AddOpponentPoint();
+
+        if(opponentScore >= 5)
+        {
+            boardState = STATE_SLEEP;
+        }
+        else
+        {
+            yield return new WaitForSeconds(ROUND_RESULT_TIME);
+            StartCoroutine(RoundCall());
+        }
+
+
     }
 
     IEnumerator PlayerTimeUp()
     {
         boardState = STATE_STANDBY;
-        yield return new WaitForSeconds(ROUND_RESULT_TIME);
-        StartCoroutine(RoundCall());
+        animatorsBoard[0].SetTrigger("OpponentWin");
+        AddOpponentPoint();
+
+        if (opponentScore >= 5)
+        {
+            boardState = STATE_SLEEP;
+            yield return new WaitForSeconds(ROUND_RESULT_TIME);
+            mainManager.MoveToResultPanel();
+        }
+        else
+        {
+            yield return new WaitForSeconds(ROUND_RESULT_TIME);
+            StartCoroutine(RoundCall());
+        }
     }
 
     IEnumerator OpponentTimeUp()
     {
         boardState = STATE_STANDBY;
-        yield return new WaitForSeconds(ROUND_RESULT_TIME);
-        StartCoroutine(RoundCall());
+        animatorsBoard[0].SetTrigger("PlayerWin");
+        AddPlayerPoint();
+
+        if (playerScore >= 5)
+        {
+            yield return new WaitForSeconds(ROUND_RESULT_TIME);
+            mainManager.MoveToResultPanel();
+            boardState = STATE_SLEEP;
+        }
+        else
+        {
+            yield return new WaitForSeconds(ROUND_RESULT_TIME);
+            StartCoroutine(RoundCall());
+        }
     }
 
-    IEnumerator PlayerPilingViolatation()
+    IEnumerator PlayerPilingViolatation(int s)
     {
         boardState = STATE_STANDBY;
-        yield return new WaitForSeconds(ROUND_RESULT_TIME);
+        animatorsBoard[0].SetTrigger("OpponentWin");
+        if (mainBoard[s] == 1) animatorsBoard[s].SetTrigger("ViolationMaru");
+        if (mainBoard[s] == 2) animatorsBoard[s].SetTrigger("ViolationBatsu");
+
+        AddOpponentPoint();
+
+        if (opponentScore >= 5)
+        {
+            boardState = STATE_SLEEP;
+            yield return new WaitForSeconds(ROUND_RESULT_TIME);
+            mainManager.MoveToResultPanel();
+        }
+        else
+        {
+            yield return new WaitForSeconds(ROUND_RESULT_TIME);
+            StartCoroutine(RoundCall());
+        }
     }
 
     IEnumerator OpponentPilingViolatation()
     {
         boardState = STATE_STANDBY;
-        yield return new WaitForSeconds(ROUND_RESULT_TIME);
+        animatorsBoard[0].SetTrigger("PlayerWin");
+        AddPlayerPoint();
+
+        if (playerScore >= 5)
+        {
+            boardState = STATE_SLEEP;
+            yield return new WaitForSeconds(ROUND_RESULT_TIME);
+            mainManager.MoveToResultPanel();
+        }
+        else
+        {
+            yield return new WaitForSeconds(ROUND_RESULT_TIME);
+            StartCoroutine(RoundCall());
+        }
     }
 
     IEnumerator PlayerAssignedViolatation()
@@ -373,7 +457,8 @@ public class BoardManager : MonoBehaviour
     IEnumerator DrawGame()
     {
         boardState = STATE_STANDBY;
-        if (drawCount < 24) drawCount++;
+        drawCount++;
+        if (continuousDrawCount < 24) continuousDrawCount++;
 
         animatorsBoard[0].SetTrigger("Draw");
         for (int i = 1; i < 10; i++)
@@ -398,7 +483,16 @@ public class BoardManager : MonoBehaviour
 
         yield return new WaitForSeconds(2.0f);
         Debug.Log("FIGHT");
-        boardState = STATE_PLAYER_TURN;
-        animatorsBoard[0].SetTrigger("PlayerTurn");
+        if((playerScore + opponentScore + drawCount) % 2 == 0)
+        {
+            boardState = STATE_PLAYER_TURN;
+            animatorsBoard[0].SetTrigger("PlayerTurn");
+        }
+        else
+        {
+            boardState = STATE_OPPONENT_TURN;
+            animatorsBoard[0].SetTrigger("OpponentTurn");
+        }
+
     }
 }

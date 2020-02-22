@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.Advertisements;
 using DG.Tweening;
 
 public class MainManager : MonoBehaviour {
@@ -108,6 +109,33 @@ public class MainManager : MonoBehaviour {
         gameObjectButtonStart.SetActive(true);
         gameObjectButtonLogin.SetActive(true);
         gameObjectButtonSettings.SetActive(true);
+    }
+
+    public void MoveToResultPanel()
+    {
+        gameObjectPanelMain.transform.DOLocalMove(new Vector3(-1620.0f, 0.0f, 0.0f), 1.0f);
+
+        if (Advertisement.IsReady())
+        {
+            ShowOptions showOptions = new ShowOptions { resultCallback = HandleShowResult };
+            Advertisement.Show(showOptions);
+        }
+    }
+
+    private void HandleShowResult(ShowResult showResult)
+    {
+        switch (showResult)
+        {
+            case ShowResult.Finished:
+                Debug.Log("FINISHED");
+                break;
+            case ShowResult.Skipped:
+                Debug.Log("SKIPPED");
+                break;
+            case ShowResult.Failed:
+                Debug.Log("広告の表示に失敗しました");
+                break;
+        }
     }
 
     IEnumerator CoroutineIntroduction()
