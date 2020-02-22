@@ -16,8 +16,28 @@ public class BoardAI : MonoBehaviour
         
     }
 
+    public virtual void Initialize()
+	{
+
+	}
+
+    public virtual void SendBoardInformations(int[] mainBoard, int opponentCount)
+	{
+
+	}
+
     public virtual void BeginThinking()
     {
-        Debug.Log("NO THINKING");
+
+    }
+
+    public virtual int FetchThinkingAnswer()
+    {
+        return 0;
+    }
+
+    public virtual int FetchThinkingCount()
+    {
+        return 0;
     }
 }

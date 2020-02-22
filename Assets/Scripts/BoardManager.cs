@@ -51,7 +51,13 @@ public class BoardManager : MonoBehaviour
     int timePlayer = 350;
     int timeOpponent = 350;
 
+    int opponentThinkingCount;
+
+    int playerScore = 0;
+    int opponentScore = 0;
+
     int drawCount = 0;
+    int continuousDrawCount = 0;
 
     int assignedPosition = 0;
 
@@ -101,6 +107,41 @@ public class BoardManager : MonoBehaviour
                         {
                             StartCoroutine(OpponentTimeUp());
                         }
+                        
+                        if (opponentThinkingCount <= 0)
+                        {
+                            int thinkingAnswer = currentBoardAI.FetchThinkingAnswer();
+                            Debug.Log(thinkingAnswer);
+                            switch (PutStampForOpponent(thinkingAnswer))
+                            {
+                                case 0: //試合続行
+                                    boardState = STATE_PLAYER_TURN;
+                                    animatorsBoard[0].SetTrigger("PlayerTurn");
+                                    for (int i = 1; i < 10; i++)
+                                    {
+                                        string triggerName = i == thinkingAnswer ? "FadingBatsu" : "Invisible";
+                                        animatorsBoard[i].SetTrigger(triggerName);
+                                    }
+                                    break;
+                                case 2: //対戦相手の勝ち
+                                    StartCoroutine(OpponentWin());
+                                    break;
+                                case 3: //引き分け
+                                    StartCoroutine(DrawGame());
+                                    break;
+                                case 4: //対戦相手の負け（コマを重ねる）
+                                    StartCoroutine(OpponentPilingViolatation());
+                                    break;
+                                case 5: //対戦相手の負け（指定違反）
+                                    StartCoroutine(OpponentAssignedViolatation());
+                                    break;
+                            }
+                        }
+                        else
+                        {
+                            opponentThinkingCount--;
+                        }
+                        
                         break;
                 }
                 break;
@@ -144,7 +185,9 @@ public class BoardManager : MonoBehaviour
                         string triggerName = i == s ? "FadingMaru" : "Invisible";
                         animatorsBoard[i].SetTrigger(triggerName);
                     }
+                    currentBoardAI.SendBoardInformations(mainBoard, timeOpponent);
                     currentBoardAI.BeginThinking();
+                    opponentThinkingCount = currentBoardAI.FetchThinkingCount();
                     break;
                 case 1: //プレイヤーの勝ち
                     StartCoroutine(PlayerWin());
@@ -160,34 +203,9 @@ public class BoardManager : MonoBehaviour
                     break;
             }
         }
-        if(boardState == STATE_OPPONENT_TURN)
-        {
-            switch (PutStampForOpponent(s))
-            {
-                case 0: //試合続行
-                    boardState = STATE_PLAYER_TURN;
-                    animatorsBoard[0].SetTrigger("PlayerTurn");
-                    for (int i = 1; i < 10; i++)
-                    {
-                        string triggerName = i == s ? "FadingBatsu" : "Invisible";
-                        animatorsBoard[i].SetTrigger(triggerName);
-                    }
-                    break;
-                case 2: //対戦相手の勝ち
-                    StartCoroutine(OpponentWin());
-                    break;
-                case 3: //引き分け
-                    StartCoroutine(DrawGame());
-                    break;
-                case 4: //対戦相手の負け（コマを重ねる）
-                    StartCoroutine(OpponentPilingViolatation());
-                    break;
-                case 5: //対戦相手の負け（指定違反）
-                    StartCoroutine(OpponentAssignedViolatation());
-                    break;
-            }
-        }
     }
+
+    
 
     int PutStampForPlayer(int s)
     {
@@ -375,8 +393,8 @@ public class BoardManager : MonoBehaviour
             animatorsBoard[i].SetTrigger("Invisible");
             mainBoard[i] = 0;
         }
-        timePlayer = initialTimes[drawCount];
-        timeOpponent = initialTimes[drawCount];
+        timePlayer = initialTimes[continuousDrawCount];
+        timeOpponent = initialTimes[continuousDrawCount];
 
         yield return new WaitForSeconds(2.0f);
         Debug.Log("FIGHT");
